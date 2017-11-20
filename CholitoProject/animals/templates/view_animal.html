@@ -77,12 +77,14 @@
             </table>
             <br>
 
+
+
             {% if user.is_authenticated %}
                 {% if c_user in adopters %}
-                    <div class="box box-success">
-                        <div class="box-body">
-                            Has seleccionado adoptar este animal :)
-                        </div>
+                    <div class="callout callout-success lead">
+                        <h4>
+                            ¡Has seleccionado adoptar este animal! :)
+                        </h4>
                     </div>
                 {% else %}
                     <button id="adopt" data-id="{{ selected_animal.pk }}" class="btn btn-mini btn-primary"
@@ -91,6 +93,7 @@
                     </button>
                 {% endif %}
             {% endif %}
+
         </div>
 
         <div class="box-footer">
@@ -107,8 +110,10 @@
                     <tbody>
                         {% if adopters %}
                         {% for user in adopters %}
+                            <tr>
                             <td valign="middle"><img src="{{ user.avatar.url }}" class="img-circle" height=35px; alt="User Image"></td>
                             <td valign="middle">{{ user.user.first_name }} {{ user.user.last_name }}</td>
+                            </tr>
                         {% endfor %}
                         {% endif %}
                     </tbody>
