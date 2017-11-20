@@ -2,6 +2,8 @@ from django.contrib.auth.models import User, Permission
 from django.db import models
 from django.shortcuts import render
 
+from ong.models import ONG
+
 
 class NaturalUser(models.Model):
     user = models.OneToOneField(User)
@@ -19,3 +21,10 @@ class NaturalUser(models.Model):
 
     def get_index(self, request, context=None):
         return render(request, 'index.html', context=context)
+
+class UserFavorite(models.Model):
+    nat_user = models.ForeignKey('NaturalUser')
+    ong = models.ForeignKey(ONG, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.nat_user.user.username+" <3 "+self.ong.name
