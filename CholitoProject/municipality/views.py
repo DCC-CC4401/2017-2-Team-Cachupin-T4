@@ -40,9 +40,26 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = 'muni_statistics.html'
     context = {}
 
+    def getComplaintType(self, complaints):
+        type_complaint = {}
+        type_parser = dict(Complaint().COMPLAINT_OPTIONS)
+
+        for key, value in type_parser.items():
+            type_complaint[value] = 0
+
+        for complaint in list(complaints):
+            temp_status = type_parser.get(complaint.case)
+            type_complaint[temp_status] += 1
+
+        return type_complaint
+
     def get(self, request, **kwargs):
         user = get_user_index(request.user)
+        complaints = Complaint.objects.filter(
+            municipality=user.municipality)
+        self.context['complaints'] = complaints
         self.context['c_user'] = user
+        self.context['type'] = self.getComplaintType(complaints)
         return render(request, self.template_name, context=self.context)
 
 

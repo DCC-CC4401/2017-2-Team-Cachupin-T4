@@ -6,6 +6,8 @@ from CholitoProject.userManager import get_user_index
 from complaint.forms import ComplaintForm, ImageForm
 from complaint.models import Complaint, ComplaintImage, AnimalType
 
+import plotly
+from plotly.graph_objs import Scatter, Layout
 
 class ComplaintView(View):
     form = ComplaintForm(
