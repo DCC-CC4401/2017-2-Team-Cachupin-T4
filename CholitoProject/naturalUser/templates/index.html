@@ -58,12 +58,15 @@
                         content: "{{ong.name}}"
                     })
 
-                    single_marker.addListener('click', function(){
-                        infowindow.open(map, single_marker)
-                    })
-
                     infowindows.push(infowindow)
                 {% endfor %}
+
+                // Put the correct content into the markers
+                for(var i = 0; i<infowindows.length; i++){
+                    markers[i].addListener('click', function(){
+                        infowindows[this.i].open(map,markers[this.i])
+                    }.bind({i:i}))    
+                }
 
                 var json_string = unescape("{{ong_animals | safe | escapejs}}")
                 ong_animals = JSON.parse(json_string)
