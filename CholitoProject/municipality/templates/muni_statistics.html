@@ -9,7 +9,8 @@
     <script src="http://d3plus.org/js/d3plus.js"></script>
 
 
-    <div id="viz"></div>
+
+    <!--<div id="viz"></div>
 
     <script>
         var data = [
@@ -83,5 +84,25 @@
             .x("Animal")
             .y("Cantidad")
             .draw()
-    </script>
+    </script> -->
+
+
+         <div id="torta"><!-- Plotly chart will be drawn inside this DIV -->
+
+         {% for complaint in complaints %}
+         <p> complaint
+         </p>
+         {% endfor %}
+         </div>
+
+                <script>
+                <!--JAVASCRIPT CODE GOES HERE -->
+                var data = [{
+                    values: [19, 26, 55],
+                      labels: ['Residential', 'Non-Residential', 'Utility'],
+                      type: 'pie'
+                    }];
+
+                Plotly.newPlot('torta', data);
+                </script>
 {% endblock %}
