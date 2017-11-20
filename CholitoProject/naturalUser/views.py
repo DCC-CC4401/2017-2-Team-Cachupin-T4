@@ -34,12 +34,16 @@ class IndexView(TemplateView):
 
         if request.user.is_authenticated:
             # Get our favorite ids
-            natural_user = NaturalUser.objects.get(user_id=request.user.id)
-            favs = UserFavorite.objects.filter(nat_user_id=natural_user.id)
-            favs_id = list()
-            for fav in favs:
-                favs_id.append(fav.ong.id)
-            self.context['favs'] = favs_id
+            if NaturalUser.objects.filter(user_id=request.user.id).exists():
+                natural_user = NaturalUser.objects.get(user_id=request.user.id)
+                favs = UserFavorite.objects.filter(nat_user_id=natural_user.id)
+                favs_id = list()
+                for fav in favs:
+                    favs_id.append(fav.ong.id)
+                self.context['favs'] = favs_id
+            else:
+                # Wrong user logged in
+                pass
 
         self.context['animals'] = animals
         self.context['ongs'] = ongs
