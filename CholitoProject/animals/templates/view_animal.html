@@ -2,89 +2,132 @@
 
 {% block title %}{{ selected_animal.name }}{% endblock %}
 
-{% block content-header %}{{ selected_animal.name }}{% endblock %}
-
 {% block content %}
-    <!-- slider -->
-    <div class="row">
-        <div class="col-md-9" id="slider">
-            <!-- Top part of the slider -->
+    <div class="box box-solid box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title">{{ selected_animal.name }}</h3>
+        </div>
+        <!-- slider -->
+        <div class="box-body">
             <div class="row">
-                <div class="col-md-3" id="carousel-bounding-box">
-                    <div id="myCarousel" class="carousel slide">
-                        <!-- Carousel items -->
-                        <div class="carousel-inner">
+                <div class="col-md-9" id="slider">
+                    <!-- Top part of the slider -->
+                    <div class="row">
+                        <div class="col-md-3" id="carousel-bounding-box">
+                            <div id="myCarousel" class="carousel slide">
+                                <!-- Carousel items -->
+                                <div class="carousel-inner">
 
-                            {% for image in images %}
+                                    {% for image in images %}
 
-                                <div class="item"
-                                        {% if forloop.counter0 == 0 %}
-                                     id="slide0"
-                                        {% endif %}
-                                     data-slide-number="{{ forloop.counter0 }}">
-                                    <img class="img-rounded img-responsive" src="{{ image.image.url }}">
-                                </div>
+                                        <div class="item"
+                                                {% if forloop.counter0 == 0 %}
+                                             id="slide0"
+                                                {% endif %}
+                                             data-slide-number="{{ forloop.counter0 }}">
+                                            <img class="img-rounded img-responsive" src="{{ image.image.url }}">
+                                        </div>
 
-                            {% endfor %}
+                                    {% endfor %}
 
-                        </div><!--/carousel-inner-->
-                    </div><!--/carousel-->
-                    <ul class="carousel-controls-mini list-inline text-center">
-                        <li><a href="#myCarousel" data-slide="prev">‹</a></li>
-                        <li><a href="#myCarousel" data-slide="next">›</a></li>
-                    </ul><!--/carousel-controls-->
+                                </div><!--/carousel-inner-->
+                            </div><!--/carousel-->
+                            <ul class="carousel-controls-mini list-inline text-center">
+                                <li><a href="#myCarousel" data-slide="prev">‹</a></li>
+                                <li><a href="#myCarousel" data-slide="next">›</a></li>
+                            </ul><!--/carousel-controls-->
+                        </div><!--/col-->
+                        <div class="col-md-4" id="carousel-text"></div>
+
+                    </div><!--/row-->
                 </div><!--/col-->
-                <div class="col-md-4" id="carousel-text"></div>
+            </div><!--/row slider-->
 
-            </div><!--/row-->
-        </div><!--/col-->
-    </div><!--/row slider-->
+            <script>
+                $(document).ready(function () {
+                    jQuery("#slide0").addClass("active");
+                });
+            </script>
 
-    <script>
-        $(document).ready(function () {
-            jQuery("#slide0").addClass("active");
-        });
-    </script>
+            <table class="table table-hover">
+                <colgroup>
+                    <col span="1" style="width: 25%;">
+                    <col span="1" style="width: 75%;">
+                </colgroup>
+                <tbody>
+                <tr>
+                    <th>Sexo</th><td>{{ selected_animal.get_gender_display }}</td>
+                </tr>
+                <tr>
+                    <th>Tipo de Animal</th><td>{{ selected_animal.animal_type }}</td>
+                </tr>
+                <tr>
+                    <th>Edad Estimada</th><td>{{ selected_animal.estimated_age }}</td>
+                </tr>
+                <tr>
+                    <th>Días en adopción</th><td>{{ selected_animal.days_in_adoption }}</td>
+                </tr>
+                <tr>
+                    <th>Color</th><td>{{ selected_animal.color }}</td>
+                </tr>
+                <tr>
+                    <th>Descripción</th><td>{{ selected_animal.description }}</td>
+                </tr>
+                </tbody>
+            </table>
+            <br>
 
+            {% if user.is_authenticated %}
+                {% if c_user in adopters %}
+                    <div class="box box-success">
+                        <div class="box-body">
+                            Has seleccionado adoptar este animal :)
+                        </div>
+                    </div>
+                {% else %}
+                    <button id="adopt" data-id="{{ selected_animal.pk }}" class="btn btn-mini btn-primary"
+                                type="button">
+                        Adoptame!
+                    </button>
+                {% endif %}
+            {% endif %}
+        </div>
 
-    <p>Genero: {{ selected_animal.get_gender_display }}</p>
-    <p>Tipo de animal: {{ selected_animal.animal_type }}</p>
-    <p>Edad estimada: {{ selected_animal.estimated_age }} años</p>
-    <p>Dias en adopcion: {{ selected_animal.days_in_adoption }}</p>
-    <p>Color: {{ selected_animal.color }}</p>
-    <p>Descripcion: {{ selected_animal.description }}</p>
+        <div class="box-footer">
+            <div class="box box-solid box-default">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Los siguientes usuarios han seleccionado adoptar:</h3>
+                </div>
+                <div class="box-body">
+                    <table class="table table-hover">
+                    <colgroup>
+                        <col span="1" align="right" style="width: 10%;">
+                        <col span="1" style="width: 90%;">
+                    </colgroup>
+                    <tbody>
+                        {% if adopters %}
+                        {% for user in adopters %}
+                            <td valign="middle"><img src="{{ user.avatar.url }}" class="img-circle" height=35px; alt="User Image"></td>
+                            <td valign="middle">{{ user.user.first_name }} {{ user.user.last_name }}</td>
+                        {% endfor %}
+                        {% endif %}
+                    </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
 
-    <br><br>
-    {% if user.is_authenticated %}
-        {% if c_user in adopters %}
-            <p>Has seleccionado adoptar este animal :)</p>
-        {% else %}
-            <button id="adopt" data-id="{{ selected_animal.pk }}" class="btn btn-mini btn-primary"
-                    type="button">
-                ¡Adoptame!
-            </button>
-        {% endif %}
-    {% endif %}
-
-    <p>Los siguientes usuarios han seleccionado adoptar:</p>
-    <div id="the_adopters">
-        {% if adopters %}
-            {% for user in adopters %}
-                <p>{{ user.user.first_name }} {{ user.user.last_name }}</p>
-            {% endfor %}
-        {% endif %}
-
+            <script>
+                $('#adopt').click(function () {
+                    var animal_id = $(this).attr("data-id");
+                    $.get('{% url 'adopt' %}', {id: animal_id}, function (data) {
+                        $('#the_adopters').html(data);
+                        $('#adopt').hide();
+                        alert("Hemos enviado tu información a la ONG correspondiente!");
+                    });
+                });
+            </script>
+        </div>
     </div>
-
-    <script>
-        $('#adopt').click(function () {
-            var animal_id = $(this).attr("data-id");
-            $.get('{% url 'adopt' %}', {id: animal_id}, function (data) {
-                $('#the_adopters').html(data);
-                $('#adopt').hide();
-                alert("Hemos enviado tu información a la ONG correspondiente!");
-            });
-        });
-    </script>
 
 {% endblock %}
