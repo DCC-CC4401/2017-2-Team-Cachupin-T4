@@ -74,7 +74,6 @@
             }
 
             function centerOnPosition(position){
-                console.log(position)
                 var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
 
                 map.setCenter(myPosition)
@@ -92,7 +91,7 @@
             }
 
             function fail(error){
-                console.log('Fallo al centrar en posicion: ',error);
+                alert('Fallo al centrar en posicion: ',error);
             }
 
             function handleAnimalType(){
