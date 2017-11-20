@@ -1,31 +1,43 @@
 {% extends "Municipality/municipality-standard.html" %}
+
 {% block title %}Denuncias{% endblock %}
 
 {% block content-header %}Denuncias{% endblock %}
 
 {% block content %}
-    <div id="chart_div"></div>
-    <br>
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th>Tipo Denuncia</th>
-            <th>Animal</th>
-            <th>Dirección</th>
-            <th>Herido</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for complaint in complaints %}
-            <tr class="clickable-row" data-href="{% url 'see-complaint' complaint.pk %}">
-                <th>{{ complaint.get_case_display }}</th>
-                <th>{{ complaint.animal_type }}</th>
-                <th>{{ complaint.directions }}</th>
-                <th>{{ complaint.get_wounded_display }}</th>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title">Estadísticas de denuncias emitidas</h3>
+        </div>
+        <div id="chart_div"></div>
+        <br>
+    </div>
+    <div class="box box-primary">
+        <table class="table table-hover">
+            <div>
+                <div class="box-primary">
+                <tr class="box-title">
+                    <th>Tipo Denuncia</th>
+                    <th>Animal</th>
+                    <th>Dirección</th>
+                    <th>Herido</th>
+                </tr>
+                </div>
+            </div>
+
+            <tbody>
+            {% for complaint in complaints %}
+                <tr class="clickable-row" data-href="{% url 'see-complaint' complaint.pk %}">
+                    <th>{{ complaint.get_case_display }}</th>
+                    <th>{{ complaint.animal_type }}</th>
+                    <th>{{ complaint.directions }}</th>
+                    <th>{{ complaint.get_wounded_display }}</th>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
 
     
 
@@ -50,7 +62,6 @@ function drawStacked() {
       ]);
 
       var options = {
-        title: 'Estadisticas de denuncias emitidas',
         chartArea: {width: '50%'},
         isStacked: true,
         hAxis: {
