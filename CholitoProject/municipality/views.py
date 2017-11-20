@@ -51,12 +51,15 @@ class StatisticsView(PermissionRequiredMixin, LoginRequiredMixin, View):
             temp_status = type_parser.get(complaint.case)
             type_complaint[temp_status] += 1
 
+
         return type_complaint
+
 
     def get(self, request, **kwargs):
         user = get_user_index(request.user)
         complaints = Complaint.objects.filter(
             municipality=user.municipality)
+
         self.context['complaints'] = complaints
         self.context['c_user'] = user
         self.context['type'] = self.getComplaintType(complaints)
