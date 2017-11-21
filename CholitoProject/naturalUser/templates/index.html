@@ -6,29 +6,95 @@
 {% block content-header %}Adoptar{% endblock %}
 
 {% block content %}
+        
+        <button id="boton" onclick="centerOnUser()">Utilizar mi posicion</button>
+        <div id="Gmap" style="height: 500px;">
+        </div>
 
-        {% if user.is_authenticated %}
-            <img src="{% static 'images/fav.jpg' %}" usemap="#image-map"/>
-            <map name="image-map">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="644,317,545,198"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="693,129,828,252"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-in' %}" coords="469,502,602,612"
-                      shape="rect">
-            </map>
-        {% else %}
-            <img src="{% static 'images/noFav.jpg' %}" usemap="#image-map"/>
+        <script type="text/javascript">
+            function initMap(){
+                map = new google.maps.Map(document.getElementById('Gmap'),{
+                    center: {lat: -35.675147, lng: -71.54296899999997}, // Posicion CHILE
+                    zoom: 12
+                    }
+                );
 
-            <map name="image-map">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="830,258,696,117"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="551,204,643,307"
-                      shape="rect">
-                <area target="" alt="ong" title="ong" href="{% url 'user-ong-out' %}" coords="469,505,604,614"
-                      shape="rect">
-            </map>
-        {% endif %}
+                {% if user.is_authenticated %}
+                // Only one icon
+                var icon = {
+                    url: "/static/images/star-icon.png", // url
+                    scaledSize: new google.maps.Size(40, 40), // scaled size
+                    origin: new google.maps.Point(0,0), // origin
+                    anchor: new google.maps.Point(0, 0) // anchor
+                }
+                {% endif %}
+
+                // Reset the markers
+                markers = new Array()
+                ongs = new Array()
+                infowindows = new Array()
+
+                {% for ong in ongs %}
+                    // Create one marker
+                    var single_marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(
+                                    {{ong.lat}}, {{ong.lng}}
+                                ),
+                            map: map
+                            {% if user.is_authenticated %}
+                                {% if ong.id in favs %}
+                                    ,icon: icon
+                                {% endif %}            
+                            {% endif %}
+                        })
+                    markers.push(single_marker)
+
+                    ongs.push({{ong.id}})
+
+                    // Save the name and count animals
+                    var infowindow = new google.maps.InfoWindow({
+                        content: "{{ong.name}}"
+                    })
+
+                    single_marker.addListener('click', function(){
+                        infowindow.open(map, single_marker)
+                    })
+
+                    infowindows.push(infowindow)
+                {% endfor %}
+
+                //ong_animals = JSON.parse("{{ong_animals}}")
+
+            }
+
+            function centerOnPosition(position){
+                console.log(position)
+                var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+
+                map.setCenter(myPosition)
+
+                var userMarker = new google.maps.Marker({
+                    position: myPosition,
+                    map: map,
+                    icon: "/static/images/bluecircle.png"
+                });
+
+            }
+
+            function centerOnUser(){
+                navigator.geolocation.getCurrentPosition(centerOnPosition,fail)
+            }
+
+            function fail(error){
+                console.log('Fallo al centrar en posicion: ',error);
+            }
+
+
+        </script>
+
+        <!-- GOOGLE API SCRIPT WITH LICENSE KEY -->
+        <script async defer src='https://maps.googleapis.com/maps/api/js?key=AIzaSyD7BSRwpAGXEK00pw7LMacR_xa5f78xiRU&callback=initMap'> </script>
+
 
 {% endblock %}
 

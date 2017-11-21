@@ -4,11 +4,15 @@ from django.contrib.auth.mixins import PermissionRequiredMixin, LoginRequiredMix
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
+from django.core import serializers
+import json
 
 from CholitoProject.userManager import get_user_index
 from complaint.models import AnimalType
 from naturalUser.forms import SignUpForm, AvatarForm
-from naturalUser.models import NaturalUser
+from naturalUser.models import NaturalUser, UserFavorite
+from animals.models import Animal
+from ong.models import ONG
 
 
 class IndexView(TemplateView):
@@ -17,8 +21,29 @@ class IndexView(TemplateView):
     def get(self, request, **kwargs):
         c_user = get_user_index(request.user)
         self.context['c_user'] = c_user
+
         animals = AnimalType.objects.all()
+
+        # Get animals in JSON format
+        ong_animals = Animal.objects.exclude(ong__isnull=True)
+        ong_animals = serializers.serialize("json",ong_animals)
+        #ong_animals = json.dumps(ong_animals)
+
+        # Get all the ONGs
+        ongs = ONG.objects.all()
+
+        if request.user.is_authenticated:
+            # Get our favorite ids
+            natural_user = NaturalUser.objects.get(user_id=request.user.id)
+            favs = UserFavorite.objects.filter(nat_user_id=natural_user.id)
+            favs_id = list()
+            for fav in favs:
+                favs_id.append(fav.ong.id)
+            self.context['favs'] = favs_id
+
         self.context['animals'] = animals
+        self.context['ongs'] = ongs
+        self.context['ong_animals'] = ong_animals
         if c_user is None:
             return render(request, 'index.html', context=self.context)
         return c_user.get_index(request, context=self.context)
