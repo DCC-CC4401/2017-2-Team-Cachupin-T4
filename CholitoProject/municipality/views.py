@@ -4,6 +4,9 @@ from django.contrib.auth.mixins import PermissionRequiredMixin,\
     LoginRequiredMixin
 from complaint.models import Complaint
 from CholitoProject.userManager import get_user_index
+import datetime
+
+
 
 
 class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
@@ -11,7 +14,7 @@ class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
     template_name = 'muni_complaints_main.html'
     context = {}
 
-    def getComplaintStats(self, complaints):
+    def getComplaintStats(self, complaints, inicio, fin):
         stats_complaint = {}
         status_parser = dict(Complaint().COMPLAINT_STATUS)
 
@@ -20,7 +23,8 @@ class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
         for complaint in list(complaints):
             temp_status = status_parser.get(complaint.status)
-            stats_complaint[temp_status] += 1
+            if (datetime.date.today() > inicio and datetime.date.today() < fin):
+                stats_complaint[temp_status] += 1
 
         return stats_complaint
 
@@ -31,7 +35,7 @@ class IndexView(PermissionRequiredMixin, LoginRequiredMixin, View):
 
         self.context['complaints'] = complaints
         self.context['c_user'] = user
-        self.context['stats'] = self.getComplaintStats(complaints)
+        self.context['stats'] = self.getComplaintStats(complaints,datetime.date.today() - datetime.timedelta(365/12),datetime.date.today())
         return render(request, self.template_name, context=self.context)
 
 
