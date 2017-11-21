@@ -4,6 +4,16 @@
 {% block content-header %}Denuncias{% endblock %}
 
 {% block content %}
+
+    <form action="/action_page.php">
+        <h4> Elija un rango de fechas: </h4>
+      <input type="date" name="inicio">
+      <input type="date" name="fin">
+      <input type="submit">
+    </form>
+    <br>
+    <br>
+    <br>
     <div id="chart_div"></div>
     <br>
     <table class="table table-hover">
@@ -27,7 +37,6 @@
         </tbody>
     </table>
 
-    
 
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
