@@ -49,6 +49,7 @@ class Complaint(models.Model):
     wounded = models.BooleanField(choices=WOUND_OPTIONS)
     color = models.TextField(max_length=50)
     municipality = models.ForeignKey(Municipality)
+    time = models.DateField(auto_now=False, auto_now_add=True, verbose_name="fecha")
 
     def __str__(self):
         return "Complaint #" + str(self.pk)
