@@ -15,6 +15,13 @@
         <script type="text/javascript">
             var map;
 
+            var xmlhttp;
+            if (window.XMLHttpRequest) {// code for IE7+, Firefox, Chrome, Opera, Safari
+              xmlhttp=new XMLHttpRequest();
+            } else {// code for IE6, IE5
+              xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+            }
+
             function initMap(){
                 map = new google.maps.Map(document.getElementById('Gmap'),{
                     center: {lat: -33.4573833, lng: -70.6646584}, // Posicion Beauchef
@@ -28,7 +35,7 @@
                     url: "/static/images/star-icon.png", // url
                     scaledSize: new google.maps.Size(40, 40), // scaled size
                     origin: new google.maps.Point(0,0), // origin
-                    anchor: new google.maps.Point(0, 0) // anchor
+                    anchor: new google.maps.Point(20,20) // anchor
                 }
                 {% endif %}
 
@@ -56,7 +63,19 @@
 
                     // Save the name and count animals
                     var infowindow = new google.maps.InfoWindow({
-                        content: "{{ong.name}}"
+                        content: "<h3>{{ong.name}}</h3>"+
+                                {% if user.is_authenticated %}
+                                "<a style='margin: 0 auto;' href='"+"{% url 'user-ong-in'%}"+"'>Ver</a>"
+                                /*
+                                +"<img src='/static/images/star-icon.png'"+
+                                " height='30' width='30' onclick='makeAJAX("+
+                                "{{ request.user.id }}"+","+
+                                "{{ ong.id }}"+",this"
+                                +")'>"
+                                */
+                                {% else %}
+                                "<a style='margin: 0 auto;' href='"+"{% url 'user-ong-out'%}"+"'>Ver</a>"
+                                {% endif %}
                     })
 
                     infowindows.push(infowindow)
@@ -73,6 +92,17 @@
                 ong_animals = JSON.parse(json_string)
 
             }
+            /*
+            function makeAJAX(user_id,ong_id,img){
+                // Make request
+                xmlhttp.onreadystatechange = function(){
+                    if (xmlhttp.readyState==4 && xmlhttp.status==200) {
+                        alert(xmlhttp.responseText)
+                    }
+                };
+                xmlhttp.open("GET","/putFavorite?user="+user_id+"&ong="+ong_id,true);
+                xmlhttp.send();
+            }*/
 
             function centerOnPosition(position){
                 var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)

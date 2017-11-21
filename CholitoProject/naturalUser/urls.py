@@ -12,6 +12,7 @@ urlpatterns = [
     url(r'^user/$', UserDetail.as_view(), name='user-update'),
     url(r'^user-ong-in/$', OngInViewTemplate.as_view(), name='user-ong-in'),
     url(r'^user-ong-out/$', OngOutViewTemplate.as_view(), name='user-ong-out'),
+    url(r'^putFavorite/$', putFavorite, name='putFavorite'),
 ]
 
 if settings.DEBUG:
@@ -19,3 +20,4 @@ if settings.DEBUG:
     urlpatterns = [
         url(r'^__debug__/', include(debug_toolbar.urls)),
     ] + urlpatterns
+

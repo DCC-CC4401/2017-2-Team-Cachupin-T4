@@ -6,6 +6,7 @@ from django.views import View
 from django.views.generic import TemplateView
 from django.core import serializers
 import json
+from django.http import JsonResponse
 
 from CholitoProject.userManager import get_user_index
 from complaint.models import AnimalType
@@ -122,3 +123,42 @@ class OngOutViewTemplate(TemplateView):
 
     def get(self, request, **kwargs):
         return render(request, self.template_name)
+
+
+def putFavorite(request):
+    if request.method == 'GET':
+        userid = int(request.GET.get('user'))
+        ongid = int(request.GET.get('ong'))
+
+        if userid==None or ongid==None:
+            data = {
+                'sucess': 'error'
+            }
+            return JsonResponse(data)
+
+        if NaturalUser.objects.filter(user_id=request.user.id).exists():
+            nat_id = NaturalUser.objects.get(user_id=userid)
+            uf = UserFavorite.objects.filter(nat_user_id=nat_id.id,ong_id=ongid)
+
+            if uf.exists():
+                uf.delete()
+                data = {
+                    'sucess': 'deleted'
+                }
+                return JsonResponse(data)
+            else:
+                new_user_fav = UserFavorite()
+                new_user_fav.nat_user_id = NaturalUser.objects.get(id=nat_id).id
+                new_user_fav.ong_id = ONG.objects.get(id=ongid).id
+                new_user_fav.save()
+                data = {
+                    'sucess': 'created'
+                }
+                return JsonResponse(data)
+            
+        else:
+            data = {
+                'sucess': 'error'
+            }
+            return JsonResponse(data)
+
