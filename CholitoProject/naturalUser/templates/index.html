@@ -7,15 +7,18 @@
 
 {% block content %}
         
-        <button id="boton" onclick="centerOnUser()">Utilizar mi posicion</button>
+        <button class="btn btn-warning" id="boton" onclick="centerOnUser()">Utilizar mi posicion</button>
+        <br>
         <div id="Gmap" style="height: 500px;">
         </div>
 
         <script type="text/javascript">
+            var map;
+
             function initMap(){
                 map = new google.maps.Map(document.getElementById('Gmap'),{
-                    center: {lat: -35.675147, lng: -71.54296899999997}, // Posicion CHILE
-                    zoom: 12
+                    center: {lat: -33.4573833, lng: -70.6646584}, // Posicion Beauchef
+                    zoom: 15
                     }
                 );
 
@@ -56,19 +59,22 @@
                         content: "{{ong.name}}"
                     })
 
-                    single_marker.addListener('click', function(){
-                        infowindow.open(map, single_marker)
-                    })
-
                     infowindows.push(infowindow)
                 {% endfor %}
 
-                //ong_animals = JSON.parse("{{ong_animals}}")
+                // Put the correct content into the markers
+                for(var i = 0; i<infowindows.length; i++){
+                    markers[i].addListener('click', function(){
+                        infowindows[this.i].open(map,markers[this.i])
+                    }.bind({i:i}))    
+                }
+
+                var json_string = unescape("{{ong_animals | safe | escapejs}}")
+                ong_animals = JSON.parse(json_string)
 
             }
 
             function centerOnPosition(position){
-                console.log(position)
                 var myPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
 
                 map.setCenter(myPosition)
@@ -86,9 +92,69 @@
             }
 
             function fail(error){
-                console.log('Fallo al centrar en posicion: ',error);
+                alert('Fallo al centrar en posicion: ',error);
             }
 
+            function handleAnimalType(){
+                cb = cb_type.checked
+                if(cb){
+                    animal_type_value = type_select.value
+                    for(var i=0; i < ong_animals.length; i++){
+                        // If is not our type
+                        if(ong_animals[i].fields.animal_type != animal_type_value){
+                            // pull ong from map
+                            markers[ongs.indexOf(ong_animals[i].fields.ong)].setMap(null) 
+                        }else{
+                            markers[ongs.indexOf(ong_animals[i].fields.ong)].setMap(map) 
+                        }
+                    }
+                }else{
+                    // Reset
+                    for(var i=0; i < markers.length; i++){
+                        markers[i].setMap(map)
+                    }
+                    // Call other filter
+                    if(cb_age.checked){
+                        handleAnimalAge()
+                    }
+                }
+            }
+
+            function handleAnimalAge(){
+                cb = cb_age.checked
+                if(cb){
+                    animal_age_value = age_select.value
+                    animal_age_value = animal_age_value.split("-")
+                    animal_age_value = [parseInt(animal_age_value[0]),parseInt(animal_age_value[1])]
+                    for(var i=0; i < ong_animals.length; i++){
+                        // If is not our type
+                        if( ong_animals[i].fields.estimated_age < animal_age_value[0] ||ong_animals[i].fields.estimated_age > animal_age_value[1]){
+                            // pull ong from map
+                            markers[ongs.indexOf(ong_animals[i].fields.ong)].setMap(null) 
+                        }else{
+                            markers[ongs.indexOf(ong_animals[i].fields.ong)].setMap(map) 
+                        }
+                    }
+                }else{
+                    // Reset
+                    for(var i=0; i < markers.length; i++){
+                        markers[i].setMap(map) 
+                    }
+                    // Call other filter
+                    if(cb_type.checked){
+                        handleAnimalType()
+                    }
+                }
+            }
+
+
+            var cb_type = document.getElementById("type_cb")
+            var cb_age = document.getElementById("age_cb")
+            var type_select = document.getElementById("animal_type_select")
+            var age_select = document.getElementById("animal_age_select")
+
+            type_select.onchange = handleAnimalType;
+            age_select.onchange = handleAnimalAge;
 
         </script>
 
