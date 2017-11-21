@@ -7,7 +7,8 @@
 
 {% block content %}
         
-        <button id="boton" onclick="centerOnUser()">Utilizar mi posicion</button>
+        <button class="btn btn-warning" id="boton" onclick="centerOnUser()">Utilizar mi posicion</button>
+        <br>
         <div id="Gmap" style="height: 500px;">
         </div>
 
@@ -16,8 +17,8 @@
 
             function initMap(){
                 map = new google.maps.Map(document.getElementById('Gmap'),{
-                    center: {lat: -35.675147, lng: -71.54296899999997}, // Posicion CHILE
-                    zoom: 12
+                    center: {lat: -33.4573833, lng: -70.6646584}, // Posicion Beauchef
+                    zoom: 15
                     }
                 );
 
