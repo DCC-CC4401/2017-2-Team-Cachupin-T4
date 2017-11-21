@@ -28,28 +28,28 @@
                             </span>
                     </a>
                     <ul class="treeview-menu c-filtro-adoptar">
-                        <div class="checkbox">
+                        <div class="checkbox" >
                             <label>
-                                <input type="checkbox"> Tipo
+                                <input type="checkbox" onclick="handleAnimalType(value)" id="type_cb"> Tipo
                             </label>
                         </div>
                         <div class="form-group">
-                            <select class="form-control">
+                            <select class="form-control" id="animal_type_select">
                                 {% for animal in animals %}
-                                    <option>{{ animal }}</option>
+                                    <option value="{{animal.id}}">{{ animal }}</option>
                                 {% endfor %}
                             </select>
                         </div>
-                        <div class="checkbox">
+                        <div class="checkbox" >
                             <label>
-                                <input type="checkbox"> Edad
+                                <input type="checkbox" onclick="handleAnimalAge(value)" id="age_cb"> Edad
                             </label>
                         </div>
                         <div class="form-group">
-                            <select class="form-control">
-                                <option>0-1</option>
-                                <option>2-4</option>
-                                <option>4-10</option>
+                            <select class="form-control" id="animal_age_select">
+                                <option value="0-1">0-1</option>
+                                <option value="2-4">2-4</option>
+                                <option value="4-10">4-10</option>
                             </select>
                         </div>
                     </ul>

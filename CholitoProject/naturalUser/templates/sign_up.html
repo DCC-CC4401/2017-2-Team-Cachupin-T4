@@ -10,11 +10,11 @@
             <strong>Cholito - Registro</strong>
         </div>
         {% if messages %}
-            <ul class="messages">
-                {% for message in messages %}
-                    <li class="{{ message.tags }}">{{ message }}</li>
-                {% endfor %}
-            </ul>
+            {% for message in messages %}
+                <div class="callout callout-warning lead">
+                    <h4 class="{{ message.tags }}">{{ message }}</h4>
+                </div>
+            {% endfor %}
         {% endif %}
         <!-- /.login-logo -->
         <div class="login-box-body">
@@ -51,8 +51,8 @@
                 </div>
                 <div class="row">
 
-                    <div class="col-xs-6">
-                        <button type="submit" class="pull-right btn btn-primary btn-block btn-flat">Crear cuenta
+                    <div class="col-xs-12">
+                        <button type="submit" class="pull-right btn btn-primary btn-block">Crear cuenta
                         </button>
                     </div>
                     <!-- /.col -->
